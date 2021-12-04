@@ -13,12 +13,6 @@ fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a String>) -> Vec<i32>
         }
     }
 
-    print!("Frequency pattern: ");
-    for v in values.iter() {
-        print!("{}", if *v < 0 { '0' } else if *v > 0 { '1' } else { '=' });
-    }
-    println!();
-
     values
 }
 

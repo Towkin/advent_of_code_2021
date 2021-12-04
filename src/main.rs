@@ -4,32 +4,41 @@ use std::fs::File;
 use std::path::Path;
 
 mod day_1;
+mod day_2;
+mod day_3;
+mod day_4;
 
 fn main() {
-    let (_, day) = read_args();
+    let (iterations, days) = read_args();
 
     let mut path = env::current_dir().unwrap();
     path.push("input");
-    path.push(format!("{}.txt", day));
 
-    let lines = read_lines(&path).expect(
-        format!("Couldn't read file! {}", path.to_str().unwrap()).as_str());
-    let lines = lines.map(|l| {
-        l.expect("Bad line!")
-    });
-
-    let result_a = day_1::solve_day_1a(lines);
-
-    println!("{}", result_a);
+    for _ in 0..iterations {
+        for day in days.iter() {
+            path.push(format!("{}.txt", day));
+            let (a, b) = match day {
+                1 => (day_1::solve_day_1a(read_lines(&path)), day_1::solve_day_1b(read_lines(&path))),
+                2 => (day_2::solve_day_2a(read_lines(&path)), day_2::solve_day_2b(read_lines(&path))),
+                3 => (day_3::solve_day_3a(read_lines(&path)), day_3::solve_day_3b(read_lines(&path))),
+                4 => (day_4::solve_day_4a(read_lines(&path)), day_4::solve_day_4b(read_lines(&path))),
+                _ => (0, 0),
+            };
+            path.pop();
+            println!("{}, {}", a,  b);
+        }
+    }
 }
 
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+fn read_lines<P>(filename: P) -> impl Iterator<Item = String>
     where P: AsRef<Path> {
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
+    let file = File::open(filename).unwrap();
+    io::BufReader::new(file)
+        .lines()
+        .map(|line| line.unwrap())
 }
 
-fn read_args() -> (u32, u32) {
+fn read_args() -> (u32, Vec<u32>) {
     let mut args = env::args();
 
     // Skip first argument
@@ -37,6 +46,6 @@ fn read_args() -> (u32, u32) {
 
     (
         args.next().unwrap().parse().expect("Bad iteration count"),
-        args.next().unwrap().parse().expect("Bad day")
+        args.map(|a| a.parse().expect("Bad day")).collect(),
     )
 }
