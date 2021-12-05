@@ -18,16 +18,21 @@ fn main() {
     for _ in 0..iterations {
         for day in days.iter() {
             path.push(format!("{}.txt", day));
-            let (a, b) = match day {
-                1 => (day_1::solve_day_1a(read_lines(&path)), day_1::solve_day_1b(read_lines(&path))),
-                2 => (day_2::solve_day_2a(read_lines(&path)), day_2::solve_day_2b(read_lines(&path))),
-                3 => (day_3::solve_day_3a(read_lines(&path)), day_3::solve_day_3b(read_lines(&path))),
-                4 => (day_4::solve_day_4a(read_lines(&path)), day_4::solve_day_4b(read_lines(&path))),
-                5 => (day_5::solve_day_5a(read_lines(&path)), day_5::solve_day_5b(read_lines(&path))),
-                _ => (0, 0),
-            };
+            {
+                let a_input = read_lines(&path);
+                let b_input = read_lines(&path);
+
+                let (a, b) = match day {
+                    1 => (day_1::solve_day_1a(a_input), day_1::solve_day_1b(b_input)),
+                    2 => (day_2::solve_day_2a(a_input), day_2::solve_day_2b(b_input)),
+                    3 => (day_3::solve_day_3a(a_input), day_3::solve_day_3b(b_input)),
+                    4 => (day_4::solve_day_4a(a_input), day_4::solve_day_4b(b_input)),
+                    5 => (day_5::solve_day_5a(a_input), day_5::solve_day_5b(b_input)),
+                    _ => (0, 0),
+                };
+                println!("{}, {}", a,  b);
+            }
             path.pop();
-            println!("{}, {}", a,  b);
         }
     }
 }
