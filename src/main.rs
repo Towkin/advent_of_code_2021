@@ -7,6 +7,7 @@ mod day_1;
 mod day_2;
 mod day_3;
 mod day_4;
+mod day_5;
 
 fn main() {
     let (iterations, days) = read_args();
@@ -22,6 +23,7 @@ fn main() {
                 2 => (day_2::solve_day_2a(read_lines(&path)), day_2::solve_day_2b(read_lines(&path))),
                 3 => (day_3::solve_day_3a(read_lines(&path)), day_3::solve_day_3b(read_lines(&path))),
                 4 => (day_4::solve_day_4a(read_lines(&path)), day_4::solve_day_4b(read_lines(&path))),
+                5 => (day_5::solve_day_5a(read_lines(&path)), day_5::solve_day_5b(read_lines(&path))),
                 _ => (0, 0),
             };
             path.pop();
