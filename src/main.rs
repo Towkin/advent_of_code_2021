@@ -8,6 +8,7 @@ mod day_2;
 mod day_3;
 mod day_4;
 mod day_5;
+mod day_6;
 
 fn main() {
     let (iterations, days) = read_args();
@@ -23,11 +24,12 @@ fn main() {
                 let b_input = read_lines(&path);
 
                 let (a, b) = match day {
-                    1 => (day_1::solve_day_1a(a_input), day_1::solve_day_1b(b_input)),
-                    2 => (day_2::solve_day_2a(a_input), day_2::solve_day_2b(b_input)),
-                    3 => (day_3::solve_day_3a(a_input), day_3::solve_day_3b(b_input)),
-                    4 => (day_4::solve_day_4a(a_input), day_4::solve_day_4b(b_input)),
-                    5 => (day_5::solve_day_5a(a_input), day_5::solve_day_5b(b_input)),
+                    1 => (day_1::solve_day_1a(a_input), day_1::solve_day_1b(b_input) as u64),
+                    2 => (day_2::solve_day_2a(a_input), day_2::solve_day_2b(b_input) as u64),
+                    3 => (day_3::solve_day_3a(a_input), day_3::solve_day_3b(b_input) as u64),
+                    4 => (day_4::solve_day_4a(a_input), day_4::solve_day_4b(b_input) as u64),
+                    5 => (day_5::solve_day_5a(a_input), day_5::solve_day_5b(b_input) as u64),
+                    6 => (day_6::solve_day_6a(a_input), day_6::solve_day_6b(b_input)),
                     _ => (0, 0),
                 };
                 println!("{}, {}", a,  b);
