@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::{env, io};
 use std::io::BufRead;
 use std::fs::File;
@@ -17,7 +18,9 @@ fn main() {
     let mut path = env::current_dir().unwrap();
     path.push("input");
 
+    let time = Instant::now();
     for _ in 0..iterations {
+        println!("Solving");
         for day in days.iter() {
             path.push(format!("{}.txt", day));
             {
@@ -34,11 +37,14 @@ fn main() {
                     7 => (day_7::solve_day_7a(a_input), day_7::solve_day_7b(b_input) as u64),
                     _ => (0, 0),
                 };
-                println!("{}, {}", a,  b);
+                println!("{day}a: {a}\n{day}b: {b}", day = day, a = a, b = b);
             }
             path.pop();
         }
+        println!("Done");
     }
+    let duration = time.elapsed();
+    println!("Completed all iterations in {:?}, average of {:?} per iteration.", duration, duration / iterations);
 }
 
 fn read_lines<P>(filename: P) -> impl Iterator<Item = String>
