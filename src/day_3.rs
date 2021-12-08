@@ -72,7 +72,5 @@ pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
     let oxygen_rating = u32::from_str_radix(most_common_line.as_str(), 2).unwrap();
     let co2_rating = u32::from_str_radix(least_common_line.as_str(), 2).unwrap();
 
-    println!("Oxygen: {} ({}), CO2: {} ({})", oxygen_rating, most_common_line, co2_rating, least_common_line);
-
     oxygen_rating * co2_rating
 }

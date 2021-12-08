@@ -11,8 +11,18 @@ fn get_points(line: &String) -> (Vector2<i32>, Vector2<i32>) {
     (values.next().unwrap(), values.next().unwrap())
 }
 
+fn points_in_line(origin: Vector2<i32>, vector: Vector2<i32>) -> impl Iterator<Item = Vector2<i32>> {
+    let sign_vector = Vector2::new(
+        vector[0].signum(),
+        vector[1].signum()
+    );
+
+    let steps = max(vector[0].abs(), vector[1].abs());
+    (0..steps + 1).map(move |step| origin + sign_vector * step)
+}
+
 pub fn solve_day_5a(lines: impl Iterator<Item = String>) -> u32 {
-    let mut map: HashMap<Vector2<i32>, u32> = HashMap::new();
+    let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
 
     for line in lines {
         let (a, b) = get_points(&line);
@@ -23,40 +33,25 @@ pub fn solve_day_5a(lines: impl Iterator<Item = String>) -> u32 {
             continue;
         }
 
-        let sign_vector = Vector2::new(
-            diff[0].signum(),
-            diff[1].signum()
-        );
-
-        let steps = max(diff[0].abs(), diff[1].abs());
-        for step in 0..steps + 1 {
-            let v = a + sign_vector * step;
-            let count = map.entry(v).or_insert(0);
-            *count += 1;
+        for point in points_in_line(a, diff) {
+            map[(point[1] * 1000 + point[0]) as usize] += 1;
         }
     }
 
-    map.values().filter(|v| **v >= 2).count().try_into().unwrap()
+    map.iter().filter(|v| **v >= 2).count().try_into().unwrap()
 }
 
 pub fn solve_day_5b(lines: impl Iterator<Item = String>) -> u32 {
-    let mut map: HashMap<Vector2<i32>, u32> = HashMap::new();
+    let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
 
     for line in lines {
         let (a, b) = get_points(&line);
         let diff = b - a;
-        let sign_vector = Vector2::new(
-            diff[0].signum(),
-            diff[1].signum()
-        );
 
-        let steps = max(diff[0].abs(), diff[1].abs());
-        for step in 0..steps + 1 {
-            let v = a + sign_vector * step;
-            let count = map.entry(v).or_insert(0);
-            *count += 1;
+        for point in points_in_line(a, diff) {
+            map[(point[1] * 1000 + point[0]) as usize] += 1;
         }
     }
 
-    map.values().filter(|v| **v >= 2).count().try_into().unwrap()
+    map.iter().filter(|v| **v >= 2).count().try_into().unwrap()
 }
