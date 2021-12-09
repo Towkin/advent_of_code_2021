@@ -1,7 +1,7 @@
-fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a String>) -> Vec<i32> {
-    let mut lines = lines.peekable();
-    let line_length = lines.peek().unwrap().len();
-    let mut values: Vec<i32> = vec![0; line_length];
+const LINE_LENGTH: usize = 12;
+
+fn get_binary_frequency(lines: impl Iterator<Item = String>) -> [i32; LINE_LENGTH] {
+    let mut values = [0; LINE_LENGTH];
 
     for line in lines {
         for (i, c) in line.chars().enumerate() {
@@ -17,24 +17,22 @@ fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a String>) -> Vec<i32>
 }
 
 pub fn solve_day_3a(lines: impl Iterator<Item = String>) -> u32 {
-    let lines: Vec<String> = lines.collect();
-    let values = get_binary_frequency(lines.iter());
+    let values = get_binary_frequency(lines);
 
     let mut gamma: u32 = 0;
     for (i, v) in values.iter().enumerate() {
-        gamma += (if *v >= 0 { 1 } else { 0 }) << values.len() - i - 1;
+        gamma += (if *v >= 0 { 1 } else { 0 }) << LINE_LENGTH - i - 1;
     }
 
-    let epsilon = !gamma & (u32::MAX >> 32 - values.len());
+    let epsilon = !gamma & (u32::MAX >> 32 - LINE_LENGTH);
     gamma * epsilon
 }
 
 pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
     let mut most_common: Vec<String> = lines.collect();
     let mut least_common = most_common.clone();
-    let line_length = most_common[0].len();
 
-    for bit_pos in 0..line_length {
+    for bit_pos in 0..LINE_LENGTH {
         let most_common_char = if most_common
             .iter()
             .map(|line| match line.chars().nth(bit_pos).unwrap() {
@@ -50,7 +48,7 @@ pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
         }
     }
 
-    for bit_pos in 0..line_length {
+    for bit_pos in 0..LINE_LENGTH {
         let most_common_char = if least_common
             .iter()
             .map(|line| match line.chars().nth(bit_pos).unwrap() {
