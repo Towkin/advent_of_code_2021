@@ -35,7 +35,7 @@ impl BingoBoard {
         false
     }
 
-    pub fn parse(lines: &[String]) -> BingoBoard {
+    pub fn parse(lines: &[&str]) -> BingoBoard {
         let mut board = BingoBoard {
             values: [0; SIZE * SIZE],
         };
@@ -69,7 +69,7 @@ impl Display for BingoBoard {
     }
 }
 
-fn get_boards(lines: &Vec<String>) -> Vec<BingoBoard> {
+fn get_boards(lines: &Vec<&str>) -> Vec<BingoBoard> {
     let mut boards: Vec<BingoBoard> = Vec::new();
     let mut i = 2;
     while i < lines.len() {
@@ -79,8 +79,9 @@ fn get_boards(lines: &Vec<String>) -> Vec<BingoBoard> {
     boards
 }
 
-pub fn solve_day_4a(lines: impl Iterator<Item = String>) -> u32 {
-    let lines: Vec<String> = lines.collect();
+pub fn solve_day_4a(input: &String) -> u32 {
+    let lines = input.lines();
+    let lines: Vec<&str> = lines.collect();
     let series = lines[0]
         .split(',')
         .map(|word| word.trim().parse().unwrap());
@@ -103,8 +104,9 @@ pub fn solve_day_4a(lines: impl Iterator<Item = String>) -> u32 {
     0
 }
 
-pub fn solve_day_4b(lines: impl Iterator<Item = String>) -> u32 {
-    let lines: Vec<String> = lines.collect();
+pub fn solve_day_4b(input: &String) -> u32 {
+    let lines = input.lines();
+    let lines: Vec<&str> = lines.collect();
     let series = lines[0]
         .split(',')
         .map(|word| word.trim().parse().unwrap());

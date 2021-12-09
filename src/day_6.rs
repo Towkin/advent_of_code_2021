@@ -1,6 +1,7 @@
 
-pub fn solve_day_6a(lines: impl Iterator<Item = String>) -> u32 {
-    let lines: Vec<String> = lines.collect();
+pub fn solve_day_6a(input: &String) -> u32 {
+    let lines = input.lines();
+    let lines: Vec<&str> = lines.collect();
     let fish_days = lines[0]
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());
@@ -29,8 +30,9 @@ pub fn solve_day_6a(lines: impl Iterator<Item = String>) -> u32 {
     population.iter().sum()
 }
 
-pub fn solve_day_6b(lines: impl Iterator<Item = String>) -> u64 {
-    let lines: Vec<String> = lines.collect();
+pub fn solve_day_6b(input: &String) -> u64 {
+    let lines = input.lines();
+    let lines: Vec<&str> = lines.collect();
     let fish_days = lines[0]
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());

@@ -1,8 +1,8 @@
-pub fn solve_day_8a(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_8a(input: &String) -> u32 {
     // 1: 2; 4: 3, 7: 3; 8: 7
     let known_digit_lengths: [usize; 4] = [2, 4, 3, 7];
 
-    lines
+    input.lines()
         .map(|line| line
             .split_once('|')
                 .unwrap()
@@ -40,8 +40,8 @@ mod digit_signals
     ];
 }
 
-pub fn solve_day_8b(lines: impl Iterator<Item = String>) -> u32 {
-    lines
+pub fn solve_day_8b(input: &String) -> u32 {
+    input.lines()
         .map(|line| {
             let (ciphers, values) = line.split_once('|').unwrap();
             let ciphers: Vec<&str> = ciphers.split(' ').collect();

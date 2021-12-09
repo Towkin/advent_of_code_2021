@@ -2,7 +2,7 @@ const LINE_LENGTH: usize = 12;
 const CHAR_ZERO: u8 = '0' as u8;
 const CHAR_ONE: u8 = '1' as u8;
 
-fn get_binary_frequency(lines: impl Iterator<Item = String>) -> [i32; LINE_LENGTH] {
+fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a str>) -> [i32; LINE_LENGTH] {
     let mut values = [0; LINE_LENGTH];
 
     for line in lines {
@@ -18,7 +18,8 @@ fn get_binary_frequency(lines: impl Iterator<Item = String>) -> [i32; LINE_LENGT
     values
 }
 
-pub fn solve_day_3a(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_3a(input: &String) -> u32 {
+    let lines = input.lines();
     let values = get_binary_frequency(lines);
 
     let mut gamma: u32 = 0;
@@ -30,8 +31,9 @@ pub fn solve_day_3a(lines: impl Iterator<Item = String>) -> u32 {
     gamma * epsilon
 }
 
-pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
-    let mut most_common: Vec<String> = lines.collect();
+pub fn solve_day_3b(input: &String) -> u32 {
+    let lines = input.lines();
+    let mut most_common: Vec<&str> = lines.collect();
     let mut least_common = most_common.clone();
 
     let oxygen_rating = {
@@ -51,7 +53,7 @@ pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
             }
         }
 
-        u32::from_str_radix(most_common[0].as_str(), 2).unwrap()
+        u32::from_str_radix(most_common[0], 2).unwrap()
     };
 
     let co2_rating = {
@@ -71,7 +73,7 @@ pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
             }
         }
 
-        u32::from_str_radix(least_common[0].as_str(), 2).unwrap()
+        u32::from_str_radix(least_common[0], 2).unwrap()
     };
 
     oxygen_rating * co2_rating

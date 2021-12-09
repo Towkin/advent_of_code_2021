@@ -1,6 +1,6 @@
 use std::collections::{HashSet, VecDeque};
 
-pub fn get_height_map(lines: impl Iterator<Item = String>) -> [u8; 100 * 100] {
+pub fn get_height_map<'a>(lines: impl Iterator<Item = &'a str>) -> [u8; 100 * 100] {
     let mut height_map: [u8; 100 * 100] = [0; 100 * 100];
     for (y, line) in lines.enumerate() {
         for (x, char) in line.chars().enumerate() {
@@ -10,8 +10,8 @@ pub fn get_height_map(lines: impl Iterator<Item = String>) -> [u8; 100 * 100] {
     return height_map;
 }
 
-pub fn solve_day_9a(lines: impl Iterator<Item = String>) -> u32 {
-    let height_map = get_height_map(lines);
+pub fn solve_day_9a(input: &String) -> u32 {
+    let height_map = get_height_map(input.lines());
 
     let mut lowest_points: Vec<u8> = Vec::new();
     for y in 0..100 {
@@ -36,7 +36,7 @@ pub fn solve_day_9a(lines: impl Iterator<Item = String>) -> u32 {
     lowest_points.iter().map(|v| (v + 1) as u32).sum()
 }
 
-pub fn get_basin_map(lines: impl Iterator<Item = String>) -> [bool; 100 * 100] {
+pub fn get_basin_map<'a>(lines: impl Iterator<Item = &'a str>) -> [bool; 100 * 100] {
     let mut basin_map: [bool; 100 * 100] = [false; 100 * 100];
     for (y, line) in lines.enumerate() {
         for (x, char) in line.chars().enumerate() {
@@ -46,8 +46,8 @@ pub fn get_basin_map(lines: impl Iterator<Item = String>) -> [bool; 100 * 100] {
     return basin_map;
 }
 
-pub fn solve_day_9b(lines: impl Iterator<Item = String>) -> u32 {
-    let basin_map = get_basin_map(lines);
+pub fn solve_day_9b(input: &String) -> u32 {
+    let basin_map = get_basin_map(input.lines());
 
     let mut closed_set: HashSet<(i32, i32)> = HashSet::new();
     let mut open_set: VecDeque<(i32, i32)> = VecDeque::new();

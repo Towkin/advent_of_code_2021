@@ -1,8 +1,8 @@
-pub fn solve_day_2a(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_2a(input: &String) -> u32 {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
 
-    for line in lines {
+    for line in input.lines() {
         match line.find(' ') {
             Some(break_point) => {
                 let (direction, offset) = line.split_at(break_point);
@@ -21,12 +21,12 @@ pub fn solve_day_2a(lines: impl Iterator<Item = String>) -> u32 {
     horizontal_position * vertical_position
 }
 
-pub fn solve_day_2b(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_2b(input: &String) -> u32 {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
     let mut aim_position: u32 = 0;
 
-    for line in lines {
+    for line in input.lines() {
         match line.find(' ') {
             Some(break_point) => {
                 let (direction, offset) = line.split_at(break_point);

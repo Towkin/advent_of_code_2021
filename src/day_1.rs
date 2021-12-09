@@ -1,5 +1,6 @@
 
-pub fn solve_day_1a(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_1a(input: &String) -> u32 {
+    let lines = input.lines();
     let mut numbers = lines
         .filter_map(|l| l.parse::<i32>().ok());
     let mut previous = numbers.next().unwrap();
@@ -14,7 +15,8 @@ pub fn solve_day_1a(lines: impl Iterator<Item = String>) -> u32 {
     count
 }
 
-pub fn solve_day_1b(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_1b(input: &String) -> u32 {
+    let lines = input.lines();
     let numbers: Vec<i32> = lines
         .filter_map(|l| l.parse::<i32>().ok())
         .collect();

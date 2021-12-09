@@ -1,8 +1,8 @@
-use std::{collections::HashMap, cmp::max};
+use std::cmp::max;
 
 use nalgebra::Vector2;
 
-fn get_points(line: &String) -> (Vector2<i32>, Vector2<i32>) {
+fn get_points(line: &str) -> (Vector2<i32>, Vector2<i32>) {
     let mut values = line.split(" -> ")
         .map(|points| Vector2::from_iterator(points
             .split(',')
@@ -21,7 +21,8 @@ fn points_in_line(origin: Vector2<i32>, vector: Vector2<i32>) -> impl Iterator<I
     (0..steps + 1).map(move |step| origin + sign_vector * step)
 }
 
-pub fn solve_day_5a(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_5a(input: &String) -> u32 {
+    let lines = input.lines();
     let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
 
     for line in lines {
@@ -41,7 +42,8 @@ pub fn solve_day_5a(lines: impl Iterator<Item = String>) -> u32 {
     map.iter().filter(|v| **v >= 2).count().try_into().unwrap()
 }
 
-pub fn solve_day_5b(lines: impl Iterator<Item = String>) -> u32 {
+pub fn solve_day_5b(input: &String) -> u32 {
+    let lines = input.lines();
     let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
 
     for line in lines {
