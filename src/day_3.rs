@@ -1,13 +1,15 @@
 const LINE_LENGTH: usize = 12;
+const CHAR_ZERO: u8 = '0' as u8;
+const CHAR_ONE: u8 = '1' as u8;
 
 fn get_binary_frequency(lines: impl Iterator<Item = String>) -> [i32; LINE_LENGTH] {
     let mut values = [0; LINE_LENGTH];
 
     for line in lines {
-        for (i, c) in line.chars().enumerate() {
-            values[i] += match c {
-                '0' => -1,
-                '1' => 1,
+        for (i, c) in line.as_bytes().iter().enumerate() {
+            values[i] += match *c {
+                CHAR_ZERO => -1,
+                CHAR_ONE => 1,
                 _ => 0
             };
         }
@@ -32,43 +34,45 @@ pub fn solve_day_3b(lines: impl Iterator<Item = String>) -> u32 {
     let mut most_common: Vec<String> = lines.collect();
     let mut least_common = most_common.clone();
 
-    for bit_pos in 0..LINE_LENGTH {
-        let most_common_char = if most_common
-            .iter()
-            .map(|line| match line.chars().nth(bit_pos).unwrap() {
-                '0' => -1,
-                '1' => 1,
-                _ => 0,
-            })
-            .sum::<i32>() >= 0 { '1' } else { '0' } as u8;
+    let oxygen_rating = {
+        for bit_pos in 0..LINE_LENGTH {
+            let most_common_char = if most_common
+                .iter()
+                .map(|line| match line.as_bytes()[bit_pos] {
+                    CHAR_ZERO => -1,
+                    CHAR_ONE => 1,
+                    _ => 0,
+                })
+                .sum::<i32>() >= 0 { '1' } else { '0' } as u8;
 
-        most_common.retain(|line| line.as_bytes()[bit_pos] == most_common_char);
-        if most_common.len() == 1 {
-            break;
+            most_common.retain(|line| line.as_bytes()[bit_pos] == most_common_char);
+            if most_common.len() == 1 {
+                break;
+            }
         }
-    }
 
-    for bit_pos in 0..LINE_LENGTH {
-        let most_common_char = if least_common
-            .iter()
-            .map(|line| match line.chars().nth(bit_pos).unwrap() {
-                '0' => -1,
-                '1' => 1,
-                _ => 0,
-            })
-            .sum::<i32>() >= 0 { '1' } else { '0' } as u8;
+        u32::from_str_radix(most_common[0].as_str(), 2).unwrap()
+    };
 
-        least_common.retain(|line| line.as_bytes()[bit_pos] != most_common_char);
-        if least_common.len() == 1 {
-            break;
+    let co2_rating = {
+        for bit_pos in 0..LINE_LENGTH {
+            let most_common_char = if least_common
+                .iter()
+                .map(|line| match line.as_bytes()[bit_pos] {
+                    CHAR_ZERO => -1,
+                    CHAR_ONE => 1,
+                    _ => 0,
+                })
+                .sum::<i32>() >= 0 { '1' } else { '0' } as u8;
+
+            least_common.retain(|line| line.as_bytes()[bit_pos] != most_common_char);
+            if least_common.len() == 1 {
+                break;
+            }
         }
-    }
 
-    let most_common_line = &most_common[0];
-    let least_common_line = &least_common[0];
-
-    let oxygen_rating = u32::from_str_radix(most_common_line.as_str(), 2).unwrap();
-    let co2_rating = u32::from_str_radix(least_common_line.as_str(), 2).unwrap();
+        u32::from_str_radix(least_common[0].as_str(), 2).unwrap()
+    };
 
     oxygen_rating * co2_rating
 }
