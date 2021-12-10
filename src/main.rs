@@ -10,6 +10,7 @@ mod day_6;
 mod day_7;
 mod day_8;
 mod day_9;
+mod day_10;
 
 fn main() {
     let (iterations, days) = read_args();
@@ -36,6 +37,7 @@ fn main() {
                     7 => (day_7::solve_day_7a(&input), day_7::solve_day_7b(&input) as u64),
                     8 => (day_8::solve_day_8a(&input), day_8::solve_day_8b(&input) as u64),
                     9 => (day_9::solve_day_9a(&input), day_9::solve_day_9b(&input) as u64),
+                    10 => (day_10::solve_day_10a(&input), day_10::solve_day_10b(&input)),
                     _ => (0, 0),
                 };
                 println!("{day}a: {a}\n{day}b: {b}", day = day, a = a, b = b);
