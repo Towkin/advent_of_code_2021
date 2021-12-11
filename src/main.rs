@@ -1,3 +1,5 @@
+// use std::io::Write;
+use std::fmt::Write;
 use std::time::Instant;
 use std::env;
 
@@ -19,11 +21,17 @@ fn main() {
     let mut path = env::current_dir().unwrap();
     path.push("input");
 
+    let mut output = std::io::stdout();
+    let mut output_text = String::from("Solving\n");
+    let mut input_file = String::new();
     let time = Instant::now();
     for _ in 0..iterations {
-        println!("Solving");
+        output_text.truncate("Solving\n".len());
+
         for day in days.iter() {
-            path.push(format!("{}.txt", day));
+            input_file.clear();
+            write!(input_file, "{}.txt", day).unwrap();
+            path.push(input_file.as_str());
             {
                 let mut input = std::fs::read_to_string(&path).unwrap();
                 input.truncate(input.trim_end().len());
@@ -42,11 +50,13 @@ fn main() {
                     11 => (day_11::solve_day_11a(&input), day_11::solve_day_11b(&input) as u64),
                     _ => (0, 0),
                 };
-                println!("{day}a: {a}\n{day}b: {b}", day = day, a = a, b = b);
+
+                write!(output_text, "{}a: {}\n{}b: {}\n", day, a, day, b).unwrap();
             }
             path.pop();
         }
-        println!("Done");
+        output_text.push_str("Done\n");
+        std::io::Write::write(&mut output, output_text.as_bytes()).unwrap();
     }
     let duration = time.elapsed();
     println!("Completed all iterations in {:?}, average of {:?} per iteration.", duration, duration / iterations);
