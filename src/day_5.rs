@@ -23,8 +23,9 @@ fn points_in_line(origin: Vector2<i32>, vector: Vector2<i32>) -> impl Iterator<I
 
 pub fn solve_day_5a(input: &String) -> u32 {
     let lines = input.lines();
-    let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
+    let mut map: Box<[u8; 1000*1000]> = Box::new([0; 1000*1000]);
 
+    let mut count = 0;
     for line in lines {
         let (a, b) = get_points(&line);
         let diff = b - a;
@@ -35,25 +36,34 @@ pub fn solve_day_5a(input: &String) -> u32 {
         }
 
         for point in points_in_line(a, diff) {
-            map[(point[1] * 1000 + point[0]) as usize] += 1;
+            let index = (point[1] * 1000 + point[0]) as usize;
+            map[index] += 1;
+            if map[index] == 2 {
+                count += 1;
+            }
         }
     }
 
-    map.iter().filter(|v| **v >= 2).count().try_into().unwrap()
+    count
 }
 
 pub fn solve_day_5b(input: &String) -> u32 {
     let lines = input.lines();
-    let mut map: Box<[u32; 1000*1000]> = Box::new([0; 1000*1000]);
+    let mut map: Box<[u8; 1000*1000]> = Box::new([0; 1000*1000]);
 
+    let mut count = 0;
     for line in lines {
         let (a, b) = get_points(&line);
         let diff = b - a;
 
         for point in points_in_line(a, diff) {
-            map[(point[1] * 1000 + point[0]) as usize] += 1;
+            let index = (point[1] * 1000 + point[0]) as usize;
+            map[index] += 1;
+            if map[index] == 2 {
+                count += 1;
+            }
         }
     }
 
-    map.iter().filter(|v| **v >= 2).count().try_into().unwrap()
+    count
 }
