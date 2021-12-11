@@ -26,7 +26,7 @@ pub fn solve_day_11a(input: &String) -> u32 {
     });
 
     let mut flashes = 0;
-    for i in 0..100 {
+    for _ in 0..100 {
         for y in 0..10 {
             for x in 0..10 {
                 energy_levels[y * 10 + x] += 1;
@@ -40,7 +40,6 @@ pub fn solve_day_11a(input: &String) -> u32 {
                 }
             }
         }
-
     }
 
     flashes
