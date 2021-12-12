@@ -1,8 +1,6 @@
 
 pub fn solve_day_6a(input: &String) -> u32 {
-    let lines = input.lines();
-    let lines: Vec<&str> = lines.collect();
-    let fish_days = lines[0]
+    let fish_days = input
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());
 
@@ -31,9 +29,7 @@ pub fn solve_day_6a(input: &String) -> u32 {
 }
 
 pub fn solve_day_6b(input: &String) -> u64 {
-    let lines = input.lines();
-    let lines: Vec<&str> = lines.collect();
-    let fish_days = lines[0]
+    let fish_days = input
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());
 
