@@ -1,20 +1,27 @@
 use std::collections::{HashMap, HashSet};
 
-fn step_a<'a>(
+fn all_uppercase(s: &str) -> bool {
+    s.chars().all(|c| c.is_uppercase())
+}
+
+fn step<'a>(
     next_nodes: &Vec<&'a str>,
     map: &HashMap<&'a str, Vec<&'a str>>,
-    visited_small_caves: &mut HashSet<&'a str>
+    visited_small_caves: &mut HashSet<&'a str>,
+    may_visit_cave_twice: bool
 ) -> u32 {
     let mut ended_paths = 0;
     for node in next_nodes {
         if *node == "end" {
             ended_paths += 1;
-        } else if node.chars().all(|c| c.is_uppercase()) {
-            ended_paths += step_a(map.get(node).unwrap(), map, visited_small_caves);
+        } else if all_uppercase(node) {
+            ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, may_visit_cave_twice);
         } else {
             if visited_small_caves.insert(node) {
-                ended_paths += step_a(map.get(node).unwrap(), map, visited_small_caves);
+                ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, may_visit_cave_twice);
                 visited_small_caves.remove(node);
+            } else if may_visit_cave_twice {
+                ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, false);
             }
         }
     }
@@ -43,35 +50,12 @@ pub fn solve_day_12a(input: &String) -> u32 {
         }
     }
 
+
     let mut visited: HashSet<&str> = HashSet::new();
 
-    step_a(
+    step(
         map.get("start").unwrap(),
-        &map, &mut visited)
-}
-
-fn step_b<'a>(
-    next_nodes: &Vec<&'a str>,
-    map: &HashMap<&'a str, Vec<&'a str>>,
-    visited_small_caves: &mut HashSet<&'a str>,
-    visited_small_cave_twice: bool
-) -> u32 {
-    let mut ended_paths = 0;
-    for node in next_nodes {
-        if *node == "end" {
-            ended_paths += 1;
-        } else if node.chars().all(|c| c.is_uppercase()) {
-            ended_paths += step_b(map.get(node).unwrap(), map, visited_small_caves, visited_small_cave_twice);
-        } else {
-            if visited_small_caves.insert(node) {
-                ended_paths += step_b(map.get(node).unwrap(), map, visited_small_caves, visited_small_cave_twice);
-                visited_small_caves.remove(node);
-            } else if !visited_small_cave_twice {
-                ended_paths += step_b(map.get(node).unwrap(), map, visited_small_caves, true);
-            }
-        }
-    }
-    ended_paths
+        &map, &mut visited, false)
 }
 
 pub fn solve_day_12b(input: &String) -> u32 {
@@ -98,7 +82,7 @@ pub fn solve_day_12b(input: &String) -> u32 {
 
     let mut visited: HashSet<&str> = HashSet::new();
 
-    step_b(
+    step(
         map.get("start").unwrap(),
-        &map, &mut visited, false)
+        &map, &mut visited, true)
 }
