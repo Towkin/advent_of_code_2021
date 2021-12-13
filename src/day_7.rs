@@ -1,6 +1,6 @@
-use std::cmp::min;
+use std::{fmt::Write, cmp::min};
 
-pub fn solve_day_7a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let numbers: Vec<u32> = input.split(',').map(|number| number.parse().unwrap()).collect();
 
     let range = *numbers.iter().min().unwrap()..*numbers.iter().max().unwrap();
@@ -9,10 +9,10 @@ pub fn solve_day_7a(input: &String) -> u32 {
         best = min(best, numbers.iter().map(|n| (*n as i32 - i as i32).abs() as u32).sum());
     }
 
-    best
+    write!(output, "{}", best).unwrap();
 }
 
-pub fn solve_day_7b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let numbers: Vec<u32> = input.split(',').map(|number| number.parse().unwrap()).collect();
 
     let range = *numbers.iter().min().unwrap()..*numbers.iter().max().unwrap()+1;
@@ -23,5 +23,5 @@ pub fn solve_day_7b(input: &String) -> u32 {
             .map(|n| cost[(*n as i32 - i as i32).abs() as usize]).sum());
     }
 
-    best
+    write!(output, "{}", best).unwrap();
 }

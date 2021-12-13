@@ -1,7 +1,8 @@
 use std::collections::HashSet;
+use std::fmt::Write;
 use nalgebra::Vector2;
 
-pub fn solve_day_13a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let mut folds = input.split("fold along");
     let points = folds.next().unwrap();
     let points = points.lines().filter_map(|point| {
@@ -28,10 +29,10 @@ pub fn solve_day_13a(input: &String) -> u32 {
         _ => panic!(),
     };
 
-    points.len() as u32
+    write!(output, "{}", points.len()).unwrap();
 }
 
-pub fn solve_day_13b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let mut folds = input.split("fold along");
     let points = folds.next().unwrap();
     let points = points.lines().filter_map(|point| {
@@ -80,16 +81,13 @@ pub fn solve_day_13b(input: &String) -> u32 {
     }
 
     for y in 0..max_y + 1 {
+        writeln!(output).unwrap();
         for x in 0..max_x + 1 {
             if point_set.contains(&Vector2::new(x, y)) {
-                print!("x");
+                write!(output, "▮").unwrap();
             } else {
-                print!(" ");
+                write!(output, " ").unwrap();
             }
         }
-        println!();
     };
-
-    // Todo: Replace how output is handled
-    point_set.len() as u32
 }

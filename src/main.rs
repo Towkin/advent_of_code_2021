@@ -1,5 +1,5 @@
-// use std::io::Write;
 use std::fmt::Write;
+use std::io::Read;
 use std::time::Instant;
 use std::env;
 
@@ -26,44 +26,58 @@ fn main() {
     let mut output = std::io::stdout();
     let mut output_text = String::from("Solving\n");
     let mut input_file = String::new();
+    let mut input = String::new();
     let time = Instant::now();
     for _ in 0..iterations {
         output_text.truncate("Solving\n".len());
 
         for day in days.iter() {
-            input_file.clear();
+            input.clear();
             write!(input_file, "{}.txt", day).unwrap();
             path.push(input_file.as_str());
-            {
-                let mut input = std::fs::read_to_string(&path).unwrap();
-                input.truncate(input.trim_end().len());
-
-                let (a, b) = match day {
-                    1 => (day_1::solve_day_1a(&input), day_1::solve_day_1b(&input) as u64),
-                    2 => (day_2::solve_day_2a(&input), day_2::solve_day_2b(&input) as u64),
-                    3 => (day_3::solve_day_3a(&input), day_3::solve_day_3b(&input) as u64),
-                    4 => (day_4::solve_day_4a(&input), day_4::solve_day_4b(&input) as u64),
-                    5 => (day_5::solve_day_5a(&input), day_5::solve_day_5b(&input) as u64),
-                    6 => (day_6::solve_day_6a(&input), day_6::solve_day_6b(&input)),
-                    7 => (day_7::solve_day_7a(&input), day_7::solve_day_7b(&input) as u64),
-                    8 => (day_8::solve_day_8a(&input), day_8::solve_day_8b(&input) as u64),
-                    9 => (day_9::solve_day_9a(&input), day_9::solve_day_9b(&input) as u64),
-                    10 => (day_10::solve_day_10a(&input), day_10::solve_day_10b(&input)),
-                    11 => (day_11::solve_day_11a(&input), day_11::solve_day_11b(&input) as u64),
-                    12 => (day_12::solve_day_12a(&input), day_12::solve_day_12b(&input) as u64),
-                    13 => (day_13::solve_day_13a(&input), day_13::solve_day_13b(&input) as u64),
-                    _ => (0, 0),
-                };
-
-                write!(output_text, "{}a: {}\n{}b: {}\n", day, a, day, b).unwrap();
-            }
+            std::fs::File::open(&path).unwrap().read_to_string(&mut input).unwrap();
             path.pop();
+            input_file.clear();
+
+            input.truncate(input.trim_end().len());
+            solve(*day, &input, &mut output_text);
         }
         output_text.push_str("Done\n");
         std::io::Write::write(&mut output, output_text.as_bytes()).unwrap();
     }
     let duration = time.elapsed();
     println!("Completed all iterations in {:?}, average of {:?} per iteration.", duration, duration / iterations);
+}
+
+macro_rules! solve_and_print_day {
+    ($day_module:ident, $day:expr, $input:expr, $output:expr) => {
+        {
+            write!($output, "{}a: ", $day).unwrap();
+            $day_module::solve_a($input, $output);
+            write!($output, "\n{}b: ", $day).unwrap();
+            $day_module::solve_b($input, $output);
+            write!($output, "\n").unwrap();
+        }
+    };
+}
+
+fn solve(day: u32, input: &String, output: &mut String) {
+    match day {
+        1 => solve_and_print_day!(day_1, 1, input, output),
+        2 => solve_and_print_day!(day_2, 2, input, output),
+        3 => solve_and_print_day!(day_3, 3, input, output),
+        4 => solve_and_print_day!(day_4, 4, input, output),
+        5 => solve_and_print_day!(day_5, 5, input, output),
+        6 => solve_and_print_day!(day_6, 6, input, output),
+        7 => solve_and_print_day!(day_7, 7, input, output),
+        8 => solve_and_print_day!(day_8, 8, input, output),
+        9 => solve_and_print_day!(day_9, 9, input, output),
+        10 => solve_and_print_day!(day_10, 10, input, output),
+        11 => solve_and_print_day!(day_11, 11, input, output),
+        12 => solve_and_print_day!(day_12, 12, input, output),
+        13 => solve_and_print_day!(day_13, 13, input, output),
+        _ => panic!("Could not solve day {}", day),
+    };
 }
 
 fn read_args() -> (u32, Vec<u32>) {

@@ -1,5 +1,6 @@
+use std::fmt::Write;
 
-pub fn solve_day_1a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let lines = input.lines();
     let mut numbers = lines
         .filter_map(|l| l.parse::<i32>().ok());
@@ -12,10 +13,11 @@ pub fn solve_day_1a(input: &String) -> u32 {
         }
         previous = value;
     }
-    count
+
+    write!(output, "{}", count).unwrap();
 }
 
-pub fn solve_day_1b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let lines = input.lines();
     let numbers: Vec<i32> = lines
         .filter_map(|l| l.parse::<i32>().ok())
@@ -30,5 +32,6 @@ pub fn solve_day_1b(input: &String) -> u32 {
         }
         previous = value;
     }
-    count
+
+    write!(output, "{}", count).unwrap();
 }

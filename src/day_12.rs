@@ -1,4 +1,5 @@
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write;
 
 fn all_uppercase(s: &str) -> bool {
     s.chars().all(|c| c.is_uppercase())
@@ -28,7 +29,7 @@ fn step<'a>(
     ended_paths
 }
 
-pub fn solve_day_12a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let mut map: HashMap<&str, Vec<&str>> = HashMap::new();
 
     for line in input.lines() {
@@ -53,12 +54,14 @@ pub fn solve_day_12a(input: &String) -> u32 {
 
     let mut visited: HashSet<&str> = HashSet::new();
 
-    step(
+    let paths = step(
         map.get("start").unwrap(),
-        &map, &mut visited, false)
+        &map, &mut visited, false);
+
+    write!(output, "{}", paths).unwrap();
 }
 
-pub fn solve_day_12b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let mut map: HashMap<&str, Vec<&str>> = HashMap::new();
 
     for line in input.lines() {
@@ -82,7 +85,9 @@ pub fn solve_day_12b(input: &String) -> u32 {
 
     let mut visited: HashSet<&str> = HashSet::new();
 
-    step(
+    let paths= step(
         map.get("start").unwrap(),
-        &map, &mut visited, true)
+        &map, &mut visited, true);
+
+    write!(output, "{}", paths).unwrap();
 }

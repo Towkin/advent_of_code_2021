@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 const LINE_LENGTH: usize = 12;
 const CHAR_ZERO: u8 = '0' as u8;
 const CHAR_ONE: u8 = '1' as u8;
@@ -18,7 +20,7 @@ fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a str>) -> [i32; LINE_
     values
 }
 
-pub fn solve_day_3a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let lines = input.lines();
     let values = get_binary_frequency(lines);
 
@@ -28,10 +30,10 @@ pub fn solve_day_3a(input: &String) -> u32 {
     }
 
     let epsilon = !gamma & (u32::MAX >> 32 - LINE_LENGTH);
-    gamma * epsilon
+    write!(output, "{}", gamma * epsilon).unwrap();
 }
 
-pub fn solve_day_3b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let lines = input.lines();
     let mut most_common: Vec<&str> = lines.collect();
     let mut least_common = most_common.clone();
@@ -76,5 +78,5 @@ pub fn solve_day_3b(input: &String) -> u32 {
         u32::from_str_radix(least_common[0], 2).unwrap()
     };
 
-    oxygen_rating * co2_rating
+    write!(output, "{}", oxygen_rating * co2_rating).unwrap();
 }

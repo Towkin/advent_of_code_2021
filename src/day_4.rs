@@ -1,4 +1,5 @@
-use std::{collections::HashSet, fmt::Display};
+
+use std::{collections::HashSet, fmt::{Display, Write}};
 
 const SIZE: usize = 5;
 
@@ -79,7 +80,7 @@ fn get_boards(lines: &Vec<&str>) -> Vec<BingoBoard> {
     boards
 }
 
-pub fn solve_day_4a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let lines = input.lines();
     let lines: Vec<&str> = lines.collect();
     let series = lines[0]
@@ -88,44 +89,51 @@ pub fn solve_day_4a(input: &String) -> u32 {
 
     let boards = get_boards(&lines);
 
-    let mut win_table: HashSet<u32> = HashSet::from_iter(series.clone().take(2));
-    for number in series.skip(2) {
-        win_table.insert(number);
+    let unmarked_number_product = || -> u32 {
+        let mut win_table: HashSet<u32> = HashSet::from_iter(series.clone().take(4));
+        for number in series.skip(4) {
+            win_table.insert(number);
 
-        for board in boards.iter() {
-            if board.board_won(&win_table) {
-                return board.values.iter()
-                    .filter(|v| !win_table.contains(v))
-                    .sum::<u32>() * number;
+            for board in boards.iter() {
+                if board.board_won(&win_table) {
+                    return board.values.iter()
+                        .filter(|v| !win_table.contains(v))
+                        .sum::<u32>() * number
+                }
             }
         }
-    };
 
-    0
+        0
+    }();
+
+    write!(output, "{}", unmarked_number_product).unwrap();
 }
 
-pub fn solve_day_4b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let lines = input.lines();
     let lines: Vec<&str> = lines.collect();
-    let series = lines[0]
-        .split(',')
+
+    let series = lines[0].split(',')
         .map(|word| word.trim().parse().unwrap());
 
     let mut boards = get_boards(&lines);
 
-    let mut win_table: HashSet<u32> = HashSet::from_iter(series.clone().take(2));
-    for number in series.skip(2) {
-        win_table.insert(number);
-        if boards.len() == 1 {
-            if boards[0].board_won(&win_table) {
-                return boards[0].values.iter()
-                    .filter(|v| !win_table.contains(v))
-                    .sum::<u32>() * number;
+    let unmarked_number_product = || -> u32 {
+        let mut win_table: HashSet<u32> = HashSet::from_iter(series.clone().take(50));
+        for number in series.skip(50) {
+            win_table.insert(number);
+            if boards.len() == 1 {
+                if boards[0].board_won(&win_table) {
+                    return boards[0].values.iter()
+                        .filter(|v| !win_table.contains(v))
+                        .sum::<u32>() * number;
+                }
             }
+
+            boards.retain(|board| !board.board_won(&win_table));
         }
+        0
+    }();
 
-        boards.retain(|board| !board.board_won(&win_table));
-    };
-
-    0
+    write!(output, "{}", unmarked_number_product).unwrap();
 }

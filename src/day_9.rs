@@ -1,4 +1,5 @@
 use std::collections::{HashSet, VecDeque};
+use std::fmt::Write;
 
 pub fn get_height_map<'a>(lines: impl Iterator<Item = &'a str>) -> [u8; 100 * 100] {
     let mut height_map: [u8; 100 * 100] = [0; 100 * 100];
@@ -10,7 +11,7 @@ pub fn get_height_map<'a>(lines: impl Iterator<Item = &'a str>) -> [u8; 100 * 10
     return height_map;
 }
 
-pub fn solve_day_9a(input: &String) -> u32 {
+pub fn solve_a(input: &String, output: &mut String) {
     let height_map = get_height_map(input.lines());
 
     let mut lowest_points: Vec<u8> = Vec::new();
@@ -33,7 +34,7 @@ pub fn solve_day_9a(input: &String) -> u32 {
         }
     }
 
-    lowest_points.iter().map(|v| (v + 1) as u32).sum()
+    write!(output, "{}", lowest_points.iter().map(|v| (v + 1) as u32).sum::<u32>()).unwrap();
 }
 
 pub fn get_basin_map<'a>(lines: impl Iterator<Item = &'a str>) -> [bool; 100 * 100] {
@@ -46,7 +47,7 @@ pub fn get_basin_map<'a>(lines: impl Iterator<Item = &'a str>) -> [bool; 100 * 1
     return basin_map;
 }
 
-pub fn solve_day_9b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let basin_map = get_basin_map(input.lines());
 
     let mut closed_set: HashSet<(i32, i32)> = HashSet::new();
@@ -98,5 +99,5 @@ pub fn solve_day_9b(input: &String) -> u32 {
         }
     }
 
-    top_three.iter().fold(1, |a, v| a * (*v))
+    write!(output, "{}", top_three.iter().fold(1, |a, v| a * (*v))).unwrap();
 }

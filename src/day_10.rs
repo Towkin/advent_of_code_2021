@@ -1,6 +1,8 @@
-pub fn solve_day_10a(input: &String) -> u32 {
+use std::fmt::Write;
+
+pub fn solve_a(input: &String, output: &mut String) {
     let mut brace_stack: Vec<char> = Vec::new();
-    input.lines().filter_map(|line| {
+    let sum: u32 = input.lines().filter_map(|line| {
         for brace in line.chars() {
             if let Some(end_brace) = match brace {
                 '(' => Some(')'),
@@ -24,10 +26,12 @@ pub fn solve_day_10a(input: &String) -> u32 {
         '}' => 1197,
         '>' => 25137,
         _ => panic!(),
-    }).sum()
+    }).sum();
+
+    write!(output, "{}", sum).unwrap();
 }
 
-pub fn solve_day_10b(input: &String) -> u64 {
+pub fn solve_b(input: &String, output: &mut String) {
     let mut brace_stack: Vec<char> = Vec::new();
     let mut points: Vec<u64> = input.lines().filter_map(|line| {
         for brace in line.chars() {
@@ -61,5 +65,5 @@ pub fn solve_day_10b(input: &String) -> u64 {
     }).collect();
 
     points.sort();
-    points[points.len() / 2]
+    write!(output, "{}", points[points.len() / 2]).unwrap();
 }

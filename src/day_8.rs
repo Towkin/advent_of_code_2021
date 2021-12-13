@@ -1,8 +1,10 @@
-pub fn solve_day_8a(input: &String) -> u32 {
+use std::fmt::Write;
+
+pub fn solve_a(input: &String, output: &mut String) {
     // 1: 2; 4: 3, 7: 3; 8: 7
     let known_digit_lengths: [usize; 4] = [2, 4, 3, 7];
 
-    input.lines()
+    let sum: u32 = input.lines()
         .map(|line| line
             .split_once('|')
                 .unwrap()
@@ -13,7 +15,9 @@ pub fn solve_day_8a(input: &String) -> u32 {
             )
             .count() as u32
         )
-        .sum()
+        .sum();
+
+    write!(output, "{}", sum).unwrap();
 }
 
 mod digit_signals
@@ -40,8 +44,8 @@ mod digit_signals
     ];
 }
 
-pub fn solve_day_8b(input: &String) -> u32 {
-    input.lines()
+pub fn solve_b(input: &String, output: &mut String) {
+    let sum: u32 = input.lines()
         .map(|line| {
             let (ciphers, values) = line.split_once('|').unwrap();
             let ciphers: Vec<&str> = ciphers.split(' ').collect();
@@ -117,5 +121,7 @@ pub fn solve_day_8b(input: &String) -> u32 {
                     .position(|d| *d == digit_bits).unwrap() as u32)
                 .fold(0, |value, digit| value * 10 + digit)
         })
-        .sum()
+        .sum();
+
+    write!(output, "{}", sum).unwrap();
 }

@@ -1,4 +1,6 @@
-pub fn solve_day_2a(input: &String) -> u32 {
+use std::fmt::Write;
+
+pub fn solve_a(input: &String, output: &mut String) {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
 
@@ -18,10 +20,10 @@ pub fn solve_day_2a(input: &String) -> u32 {
         }
     }
 
-    horizontal_position * vertical_position
+    write!(output, "{}", horizontal_position * vertical_position).unwrap();
 }
 
-pub fn solve_day_2b(input: &String) -> u32 {
+pub fn solve_b(input: &String, output: &mut String) {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
     let mut aim_position: u32 = 0;
@@ -45,5 +47,5 @@ pub fn solve_day_2b(input: &String) -> u32 {
         }
     }
 
-    horizontal_position * vertical_position
+    write!(output, "{}", horizontal_position * vertical_position).unwrap();
 }
