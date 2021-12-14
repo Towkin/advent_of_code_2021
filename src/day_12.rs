@@ -1,93 +1,105 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fmt::Write;
 
-fn all_uppercase(s: &str) -> bool {
-    s.chars().all(|c| c.is_uppercase())
+const MAX_NEIGHBORS: usize = 10;
+
+struct Cave {
+    large: bool,
+    neighbor_count: u8,
+    neighbors: [u8; MAX_NEIGHBORS],
 }
 
-fn step<'a>(
-    next_nodes: &Vec<&'a str>,
-    map: &HashMap<&'a str, Vec<&'a str>>,
-    visited_small_caves: &mut HashSet<&'a str>,
+fn step(
+    cave: &Cave,
+    map: &[Cave],
+    visited_small_caves: &mut [bool],
     may_visit_cave_twice: bool
 ) -> u32 {
     let mut ended_paths = 0;
-    for node in next_nodes {
-        if *node == "end" {
+    for i in 0..cave.neighbor_count {
+        let cave_index = cave.neighbors[i as usize] as usize;
+        let cave = &map[cave_index];
+        if cave.neighbor_count == 0 {
             ended_paths += 1;
-        } else if all_uppercase(node) {
-            ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, may_visit_cave_twice);
+        } else if cave.large {
+            ended_paths += step(&cave, map, visited_small_caves, may_visit_cave_twice);
         } else {
-            if visited_small_caves.insert(node) {
-                ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, may_visit_cave_twice);
-                visited_small_caves.remove(node);
+            if !visited_small_caves[cave_index] {
+                visited_small_caves[cave_index] = true;
+                ended_paths += step(&cave, map, visited_small_caves, may_visit_cave_twice);
+                visited_small_caves[cave_index] = false;
             } else if may_visit_cave_twice {
-                ended_paths += step(map.get(node).unwrap(), map, visited_small_caves, false);
+                ended_paths += step(&cave, map, visited_small_caves, false);
             }
         }
     }
     ended_paths
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
-    let mut map: HashMap<&str, Vec<&str>> = HashMap::new();
+fn all_uppercase(s: &str) -> bool {
+    s.chars().all(|c| c.is_uppercase())
+}
+
+fn make_cave(s: &str) -> Cave {
+    Cave {
+        large: all_uppercase(s),
+        neighbor_count: 0,
+        neighbors: [0; MAX_NEIGHBORS],
+    }
+}
+
+fn solve(input: &String, output: &mut String, may_visit_cave_twice: bool) {
+    let mut indices: HashMap<&str, usize> = HashMap::new();
+    indices.insert("start", 0);
+    indices.insert("end", 1);
+
+    let mut map: Vec<Cave> = vec![
+        make_cave("start"),
+        make_cave("end"),
+    ];
 
     for line in input.lines() {
         let mut connected_caves = line.split('-');
         let cave_a = connected_caves.next().unwrap();
         let cave_b = connected_caves.next().unwrap();
 
-        if cave_a != "end" {
-            let cave_a_neighbors = map.entry(cave_a).or_insert_with(Vec::new);
-            if cave_b != "start" {
-                cave_a_neighbors.push(cave_b);
-            }
+        let cave_a = *indices.entry(cave_a).or_insert_with(|| {
+            let index = map.len();
+            map.push(make_cave(cave_a));
+            index
+        });
+        let cave_b = *indices.entry(cave_b).or_insert_with(|| {
+            let index = map.len();
+            map.push(make_cave(cave_b));
+            index
+        });
+
+        // If `a` is not the end cave, and `b` is not the start cave
+        if cave_a != 1 && cave_b != 0 {
+            let cave = &mut map[cave_a];
+            cave.neighbors[cave.neighbor_count as usize] = cave_b as u8;
+            cave.neighbor_count += 1;
         }
-        if cave_b != "end" {
-            let cave_b_neighbors = map.entry(cave_b).or_insert_with(Vec::new);
-            if cave_a != "start" {
-                cave_b_neighbors.push(cave_a);
-            }
+
+        // If `b` is not the end cave, and `a` is not the start cave
+        if cave_b != 1 && cave_a != 0 {
+            let cave = &mut map[cave_b];
+            cave.neighbors[cave.neighbor_count as usize] = cave_a as u8;
+            cave.neighbor_count += 1;
         }
     }
 
+    let mut visited: Vec<bool> = Vec::from_iter((0..map.len()).map(|_| false));
 
-    let mut visited: HashSet<&str> = HashSet::new();
-
-    let paths = step(
-        map.get("start").unwrap(),
-        &map, &mut visited, false);
+    let paths= step(&map[0], &map, &mut visited, may_visit_cave_twice);
 
     write!(output, "{}", paths).unwrap();
 }
 
+pub fn solve_a(input: &String, output: &mut String) {
+    solve(input, output, false);
+}
+
 pub fn solve_b(input: &String, output: &mut String) {
-    let mut map: HashMap<&str, Vec<&str>> = HashMap::new();
-
-    for line in input.lines() {
-        let mut connected_caves = line.split('-');
-        let cave_a = connected_caves.next().unwrap();
-        let cave_b = connected_caves.next().unwrap();
-
-        if cave_a != "end" {
-            let cave_a_neighbors = map.entry(cave_a).or_insert_with(Vec::new);
-            if cave_b != "start" {
-                cave_a_neighbors.push(cave_b);
-            }
-        }
-        if cave_b != "end" {
-            let cave_b_neighbors = map.entry(cave_b).or_insert_with(Vec::new);
-            if cave_a != "start" {
-                cave_b_neighbors.push(cave_a);
-            }
-        }
-    }
-
-    let mut visited: HashSet<&str> = HashSet::new();
-
-    let paths= step(
-        map.get("start").unwrap(),
-        &map, &mut visited, true);
-
-    write!(output, "{}", paths).unwrap();
+    solve(input, output, true);
 }
