@@ -23,6 +23,7 @@ pub fn solve_a(input: &String, output: &mut String) {
                     write_text.write_char(*insert_char).unwrap();
                 }
             }
+            write_text.write_char(read_text.as_bytes()[read_text.len() - 1] as char).unwrap();
             read_text.clear();
             read_text.write_str(write_text.as_str()).unwrap();
             write_text.clear();
@@ -35,7 +36,6 @@ pub fn solve_a(input: &String, output: &mut String) {
     for byte in read_text.as_bytes() {
         frequency_table[*byte as usize - OFFSET] += 1;
     }
-    writeln!(output, "\n{:?}", frequency_table).unwrap();
 
     let max_count = frequency_table.iter().max().unwrap();
     let min_count = frequency_table.iter().filter(|v| **v > 0).min().unwrap();
