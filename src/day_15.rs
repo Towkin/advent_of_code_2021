@@ -54,12 +54,13 @@ fn solve(size: u32, board: &[u8]) -> u32 {
 
     let start: (u32, u32) = (0, 0);
     let end: (u32, u32) = (size - 1, size - 1);
-    let path = prelude::astar(&start,
+    let path = prelude::dijkstra(&start,
         |pos| get_neighbors(pos, end).map(|pos|
             (pos, board[get_index(pos)] as u32)),
-        |pos| {
-            board[get_index(*pos)] as u32 + end.0 - pos.0 + end.1 - pos.1
-        }, |(x, y)| *x == end.0 && *y == end.1).unwrap();
+        // |pos| {
+        //     board[get_index(*pos)] as u32 + end.0 - pos.0 + end.1 - pos.1
+        // },
+        |(x, y)| *x == end.0 && *y == end.1).unwrap();
 
     assert_eq!(path.1, path.0.iter().skip(1).map(|p| board[get_index(*p)] as u32).sum());
 
