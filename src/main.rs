@@ -17,6 +17,7 @@ mod day_11;
 mod day_12;
 mod day_13;
 mod day_14;
+mod day_15;
 
 fn main() {
     let (iterations, days) = read_args();
@@ -78,6 +79,7 @@ fn solve(day: u32, input: &String, output: &mut String) {
         12 => solve_and_print_day!(day_12, 12, input, output),
         13 => solve_and_print_day!(day_13, 13, input, output),
         14 => solve_and_print_day!(day_14, 14, input, output),
+        15 => solve_and_print_day!(day_15, 15, input, output),
         _ => panic!("Could not solve day {}", day),
     };
 }
