@@ -1,4 +1,4 @@
-use std::fmt::{Write, Display};
+use std::{fmt::{Write, Display, Debug}, ops::Add};
 
 #[derive(Clone, Copy)]
 enum Element<Pair = usize, Value = usize> {
@@ -17,6 +17,160 @@ struct Hierarchy {
     values: Vec<u8>,
     pairs: Vec<Pair>,
 }
+
+struct Hierarchy2 {
+    paired: [bool; Hierarchy2::SIZE - 1],
+    values: [u8; Hierarchy2::SIZE],
+}
+
+struct Hierarchy2Iterator<'a> {
+    index: usize,
+    hierarchy: &'a Hierarchy2,
+}
+
+impl Hierarchy2 {
+    const SIZE: usize = 32;
+    const PAIR_VALUE_MAP: [usize; Hierarchy2::SIZE - 1] = [
+        0,
+        0, 16,
+        0, 8, 16, 24,
+        0, 4, 8, 12, 16, 20, 24, 28,
+        0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30];
+
+    fn iter(&self) -> Hierarchy2Iterator {
+        Hierarchy2Iterator {
+            index: 0,
+            hierarchy: &self,
+        }
+    }
+
+    fn get_previous_value_index(&self, mut index: usize) -> Option<usize> {
+        if index == 0 {
+            return None;
+        }
+
+        while index > 0 {
+            if self.is_valid_value_index(index) {
+                return Some(index);
+            }
+
+            index -= 1;
+        }
+
+        Some(0)
+    }
+
+    fn get_next_value_index(&self, mut index: usize) -> Option<usize> {
+        index += 1;
+        while index < Hierarchy2::SIZE {
+            if self.is_valid_value_index(index) {
+                return Some(index);
+            }
+
+            index += 1;
+        }
+        None
+    }
+
+    fn is_valid_value_index(&self, index: usize) -> bool {
+        let mut tree_index = 0;
+        let mut offset = 0;
+        let mut scope = Hierarchy2::SIZE;
+
+        loop {
+            if !self.paired[tree_index] {
+                return index == offset;
+            }
+
+            scope /= 2;
+            if scope == 1 {
+                return true;
+            }
+
+            let right_factor = (index - offset >= scope) as usize;
+            offset += scope * right_factor;
+            // Left: index * 2 + 1
+            // Right: index * 2 + 2
+            tree_index = tree_index * 2 + 1 + 1 * right_factor;
+        }
+    }
+
+    fn parse(line: &str) -> Hierarchy2 {
+        let mut hierarchy = Hierarchy2 {
+            paired: [false; Hierarchy2::SIZE - 1],
+            values: [0; Hierarchy2::SIZE],
+        };
+
+        let mut pair_index = 0;
+        let mut value_index = 0;
+        for c in line.as_bytes().iter() {
+            match *c {
+                b'[' => {
+                    hierarchy.paired[pair_index] = true;
+                    pair_index = pair_index * 2 + 1;
+                },
+                b']' => pair_index = (pair_index - 1) / 2,
+                b',' => {
+                    pair_index += 1;
+                    value_index = hierarchy.get_next_value_index(value_index).unwrap();
+                },
+                _ => hierarchy.values[value_index] = *c - b'0',
+            };
+        };
+
+        hierarchy
+    }
+}
+
+impl Add for Hierarchy2 {
+    type Output = Hierarchy2;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        panic!();
+    }
+}
+
+impl Display for Hierarchy2 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        const STEP_SIZE: [usize; 5] = [16, 8, 4, 2, 1];
+
+        fn write_context(
+            hierarchy: &Hierarchy2,
+            f: &mut std::fmt::Formatter<'_>,
+            tree_index: usize, value_index: usize, depth: usize) -> std::fmt::Result {
+            if tree_index < Hierarchy2::SIZE - 1 && hierarchy.paired[tree_index] {
+                f.write_char('[')?;
+                write_context(hierarchy, f, tree_index * 2 + 1, value_index, depth + 1)?;
+                f.write_char(',')?;
+                write_context(hierarchy, f, tree_index * 2 + 2, value_index + STEP_SIZE[depth], depth + 1)?;
+                f.write_char(']')
+            } else {
+                Display::fmt(&hierarchy.values[value_index], f)
+            }
+        }
+
+        write_context(self, f, 0, 0, 0)
+    }
+}
+
+impl<'a> Iterator for Hierarchy2Iterator<'a> {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index >= 16 {
+            return None;
+        }
+        let value = Some(self.hierarchy.values[self.index]);
+        if let Some(index) = self.hierarchy.get_next_value_index(self.index) {
+            self.index = index;
+        } else {
+            self.index = 16;
+        }
+        value
+    }
+}
+
+
 
 fn reduce_explode(pair_index: usize, hierarchy: &mut Hierarchy, depth: u8) -> bool {
     let pair = hierarchy.pairs[pair_index];
@@ -192,12 +346,12 @@ impl Pair {
         f.write_char('[')?;
         match &self.left {
             Element::Pair(pair) => hierarchy.pairs[*pair].fmt(hierarchy, f),
-            Element::Value(value) => hierarchy.values[*value].fmt(f),
+            Element::Value(value) => panic!(),//hierarchy.values[*value].fmt(f),
         }?;
         f.write_char(',')?;
         match &self.right {
             Element::Pair(pair) => hierarchy.pairs[*pair].fmt(hierarchy, f),
-            Element::Value(value) => hierarchy.values[*value].fmt(f),
+            Element::Value(value) => panic!(),//hierarchy.values[*value].fmt(f),
         }?;
         f.write_char(']')
     }
@@ -273,11 +427,11 @@ fn parse_line(line: &str) -> Hierarchy {
 }
 
 pub fn solve_a(input: &String, output: &mut String) {
-    let mut hierarchy = parse_line("[[[[[9,8],1],2],3],4]");
-    reduce(&mut hierarchy);
+    let hierarchy = Hierarchy2::parse("[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]");
     println!("{}", hierarchy);
-
-
+    // let mut hierarchy = parse_line("[[[[[9,8],1],2],3],4]");
+    // reduce(&mut hierarchy);
+    // println!("{}", hierarchy);
 
     // let hierarchies = input.lines().map(parse_line);
 
