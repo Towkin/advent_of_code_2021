@@ -3,6 +3,7 @@ use nalgebra::{Vector3, Matrix3};
 
 type Position = Vector3<i32>;
 
+#[derive(Clone, Copy)]
 struct Transform {
     rotation: Matrix3<i32>,
     translation: Vector3<i32>,
@@ -118,20 +119,30 @@ impl Scanner {
     }
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
-    let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
+fn get_scanner_transforms(scanners: &Vec<Scanner>) -> Vec<Transform> {
     let origin_scanner = &scanners[0];
     let mut scanner_transforms: Vec<Option<Transform>> = Vec::from_iter(scanners.iter().map(|scanner| origin_scanner.get_relative_transform(scanner)));
+    let mut untested_transforms: Vec<Vec<usize>> = Vec::with_capacity(scanners.len());
+    untested_transforms.push(Vec::new()); // Empty origin
+    for i in 1..scanners.len() {
+        let mut other_indices = Vec::with_capacity(scanners.len() - 2);
+        for j in 1..scanners.len() {
+            if i != j {
+                other_indices.push(j);
+            }
+        }
+        untested_transforms.push(other_indices);
+    }
 
     while scanner_transforms.iter().any(|t| if let None = t { true} else { false }) {
         for blind_scanner_index in 1..scanner_transforms.len() {
             if let Some(_) = &scanner_transforms[blind_scanner_index] {
                 continue;
             }
-    
-            for known_scanner_index in 1..scanner_transforms.len() {
-                if let Some(parent_transform) = &scanner_transforms[known_scanner_index] {
-                    if let Some(child_transform) = scanners[known_scanner_index].get_relative_transform(&scanners[blind_scanner_index]) {
+
+            for untested_index in &untested_transforms[blind_scanner_index] {
+                if let Some(parent_transform) = &scanner_transforms[*untested_index] {
+                    if let Some(child_transform) = scanners[*untested_index].get_relative_transform(&scanners[blind_scanner_index]) {
                         scanner_transforms[blind_scanner_index] = Some(Transform {
                             rotation: parent_transform.rotation * child_transform.rotation,
                             translation: parent_transform.translation + parent_transform.rotation * child_transform.translation,
@@ -140,15 +151,22 @@ pub fn solve_a(input: &String, output: &mut String) {
                     }
                 }
             }
+
+            untested_transforms[blind_scanner_index].retain(|i| if let None = scanner_transforms[*i] { true } else { false });
         }
     }
 
-    let mut beacon_positions: HashSet<Position> = HashSet::from_iter(origin_scanner.beacons.iter().map(|beacon| beacon.position));
+    Vec::from_iter(scanner_transforms.iter().filter_map(|t| *t))
+}
+
+pub fn solve_a(input: &String, output: &mut String) {
+    let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
+    let scanner_transforms = get_scanner_transforms(&scanners);
+
+    let mut beacon_positions: HashSet<Position> = HashSet::new();
     for (scanner, transform) in scanners.iter().zip(scanner_transforms) {
-        if let Some(transform) = transform {
-            for position in scanner.beacons.iter().map(|beacon| transform.transform(beacon.position)) {
-                beacon_positions.insert(position);
-            }
+        for position in scanner.beacons.iter().map(|beacon| transform.transform(beacon.position)) {
+            beacon_positions.insert(position);
         }
     }
 
@@ -157,33 +175,9 @@ pub fn solve_a(input: &String, output: &mut String) {
 
 pub fn solve_b(input: &String, output: &mut String) {
     let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
-    let origin_scanner = &scanners[0];
-    let mut scanner_transforms: Vec<Option<Transform>> = Vec::from_iter(scanners.iter().map(|scanner| origin_scanner.get_relative_transform(scanner)));
+    let scanner_transforms = get_scanner_transforms(&scanners);
 
-    while scanner_transforms.iter().any(|t| if let None = t { true} else { false }) {
-        for blind_scanner_index in 1..scanner_transforms.len() {
-            if let Some(_) = &scanner_transforms[blind_scanner_index] {
-                continue;
-            }
-    
-            for known_scanner_index in 1..scanner_transforms.len() {
-                if let Some(parent_transform) = &scanner_transforms[known_scanner_index] {
-                    if let Some(child_transform) = scanners[known_scanner_index].get_relative_transform(&scanners[blind_scanner_index]) {
-                        scanner_transforms[blind_scanner_index] = Some(Transform {
-                            rotation: parent_transform.rotation * child_transform.rotation,
-                            translation: parent_transform.translation + parent_transform.rotation * child_transform.translation,
-                        });
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    let scanner_positions: Vec<Position> = scanner_transforms.iter().filter_map(|transform| match transform {
-        Some(transform) => Some(transform.translation),
-        None => None,
-    }).collect();
+    let scanner_positions: Vec<Position> = scanner_transforms.iter().map(|t| t.translation).collect();
     let longest_manhattan_distance = scanner_positions.iter().map(|a| scanner_positions.iter().map(|b|
         (a[0] - b[0]).abs() + (a[1] - b[1]).abs() + (a[2] - b[2]).abs() ).max().unwrap()).max().unwrap();
 
