@@ -3,7 +3,7 @@ use nalgebra::{Vector3, Matrix3};
 
 type Position = Vector3<i32>;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 struct Transform {
     rotation: Matrix3<i32>,
     translation: Vector3<i32>,
@@ -134,7 +134,7 @@ fn get_scanner_transforms(scanners: &Vec<Scanner>) -> Vec<Transform> {
         untested_transforms.push(other_indices);
     }
 
-    while scanner_transforms.iter().any(|t| if let None = t { true} else { false }) {
+    while scanner_transforms.iter().any(|t| *t == None) {
         for blind_scanner_index in 1..scanner_transforms.len() {
             if let Some(_) = &scanner_transforms[blind_scanner_index] {
                 continue;
@@ -152,7 +152,7 @@ fn get_scanner_transforms(scanners: &Vec<Scanner>) -> Vec<Transform> {
                 }
             }
 
-            untested_transforms[blind_scanner_index].retain(|i| if let None = scanner_transforms[*i] { true } else { false });
+            untested_transforms[blind_scanner_index].retain(|i| scanner_transforms[*i] == None);
         }
     }
 
