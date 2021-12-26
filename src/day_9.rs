@@ -1,5 +1,4 @@
-use std::collections::{HashSet, VecDeque};
-use std::fmt::Write;
+use std::{collections::{HashSet, VecDeque}, io::Write};
 
 pub fn get_height_map<'a>(lines: impl Iterator<Item = &'a str>) -> [u8; 100 * 100] {
     let mut height_map: [u8; 100 * 100] = [0; 100 * 100];
@@ -11,7 +10,7 @@ pub fn get_height_map<'a>(lines: impl Iterator<Item = &'a str>) -> [u8; 100 * 10
     return height_map;
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let height_map = get_height_map(input.lines());
 
     let mut lowest_points: Vec<u8> = Vec::new();
@@ -47,7 +46,7 @@ pub fn get_basin_map<'a>(lines: impl Iterator<Item = &'a str>) -> [bool; 100 * 1
     return basin_map;
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let basin_map = get_basin_map(input.lines());
 
     let mut closed_set: HashSet<(i32, i32)> = HashSet::new();

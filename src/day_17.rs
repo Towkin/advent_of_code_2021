@@ -1,6 +1,6 @@
-use std::{fmt::Write, collections::HashSet};
+use std::{collections::HashSet, io::Write};
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut ranges = input["target area: x=".len()..input.len()].split(", y=");
     ranges.next();
     let mut range_y = ranges.next().unwrap().split("..");
@@ -12,7 +12,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", top_position).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut ranges = input["target area: x=".len()..input.len()].split(", y=");
     let mut range_x = ranges.next().unwrap().split("..");
     let mut range_y = ranges.next().unwrap().split("..");

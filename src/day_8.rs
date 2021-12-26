@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::io::Write;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     // 1: 2; 4: 3, 7: 3; 8: 7
     let known_digit_lengths: [usize; 4] = [2, 4, 3, 7];
 
@@ -44,7 +44,7 @@ mod digit_signals
     ];
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let sum: u32 = input.lines()
         .map(|line| {
             let (ciphers, values) = line.split_once('|').unwrap();

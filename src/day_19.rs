@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, HashSet}, fmt::Write};
+use std::{collections::{HashMap, HashSet}, io::Write};
 use nalgebra::{Vector3, Matrix3};
 
 type Position = Vector3<i32>;
@@ -159,7 +159,7 @@ fn get_scanner_transforms(scanners: &Vec<Scanner>) -> Vec<Transform> {
     Vec::from_iter(scanner_transforms.iter().filter_map(|t| *t))
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
     let scanner_transforms = get_scanner_transforms(&scanners);
 
@@ -173,7 +173,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", beacon_positions.len()).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
     let scanner_transforms = get_scanner_transforms(&scanners);
 

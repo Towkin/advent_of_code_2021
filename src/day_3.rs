@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::io::Write;
 
 const LINE_LENGTH: usize = 12;
 const CHAR_ZERO: u8 = '0' as u8;
@@ -20,7 +20,7 @@ fn get_binary_frequency<'a>(lines: impl Iterator<Item = &'a str>) -> [i32; LINE_
     values
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let values = get_binary_frequency(lines);
 
@@ -33,7 +33,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", gamma * epsilon).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let mut most_common: Vec<&str> = lines.collect();
     let mut least_common = most_common.clone();

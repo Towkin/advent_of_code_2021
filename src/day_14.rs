@@ -1,4 +1,4 @@
-use std::{fmt::Write, collections::HashMap};
+use std::{collections::HashMap, io::Write};
 
 const SIZE: usize = ('Z' as u8 - 'A' as u8) as usize;
 const OFFSET: u8 = 'A' as u8;
@@ -14,7 +14,7 @@ struct Bucket {
     char: u8,
 }
 
-fn solve(input: &String, output: &mut String, count: u32) {
+fn solve(input: &String, output: &mut impl Write, count: u32) {
     let start_config = input.lines().next().unwrap().as_bytes();
 
     let buckets: HashMap<u16, Bucket> = HashMap::from_iter(
@@ -67,10 +67,10 @@ fn solve(input: &String, output: &mut String, count: u32) {
 }
 
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     solve(input, output, 10);
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     solve(input, output, 40);
 }

@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::io::Write;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let mut numbers = lines
         .filter_map(|l| l.parse::<i32>().ok());
@@ -17,7 +17,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", count).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let numbers: Vec<i32> = lines
         .filter_map(|l| l.parse::<i32>().ok())

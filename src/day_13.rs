@@ -1,8 +1,7 @@
-use std::collections::HashSet;
-use std::fmt::Write;
+use std::{collections::HashSet, io::Write};
 use nalgebra::Vector2;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut folds = input.split("fold along");
     let points = folds.next().unwrap();
     let points = points.lines().filter_map(|point| {
@@ -21,10 +20,10 @@ pub fn solve_a(input: &String, output: &mut String) {
     let height = fold.next().unwrap().parse().unwrap();
     let points: HashSet<Vector2<i32>> = match axis {
         "x" => HashSet::from_iter(points.map(|point| if point[0] <= height { point } else {
-            Vector2::new(height - (point[0] - height), point[1])
+            [height - (point[0] - height), point[1]].into()
         })),
         "y" => HashSet::from_iter(points.map(|point| if point[1] <= height { point } else {
-            Vector2::new(point[0], height - (point[1] - height))
+            [point[0], height - (point[1] - height)].into()
         })),
         _ => panic!(),
     };
@@ -32,7 +31,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", points.len()).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut folds = input.split("fold along");
     let points = folds.next().unwrap();
     let points = points.lines().filter_map(|point| {
@@ -83,7 +82,7 @@ pub fn solve_b(input: &String, output: &mut String) {
     for y in 0..max_y + 1 {
         writeln!(output).unwrap();
         for x in 0..max_x + 1 {
-            if point_set.contains(&Vector2::new(x, y)) {
+            if point_set.contains(&[x, y].into()) {
                 write!(output, "▮").unwrap();
             } else {
                 write!(output, " ").unwrap();

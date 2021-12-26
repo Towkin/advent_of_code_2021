@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-use std::fmt::Write;
-
+use std::{collections::HashMap, io::Write};
 const MAX_NEIGHBORS: usize = 10;
 
 struct Cave {
@@ -48,7 +46,7 @@ fn make_cave(s: &str) -> Cave {
     }
 }
 
-fn solve(input: &String, output: &mut String, may_visit_cave_twice: bool) {
+fn solve(input: &String, output: &mut impl Write, may_visit_cave_twice: bool) {
     let mut indices: HashMap<&str, usize> = HashMap::new();
     indices.insert("start", 0);
     indices.insert("end", 1);
@@ -96,10 +94,10 @@ fn solve(input: &String, output: &mut String, may_visit_cave_twice: bool) {
     write!(output, "{}", paths).unwrap();
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     solve(input, output, false);
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     solve(input, output, true);
 }

@@ -1,5 +1,4 @@
-use std::cmp::max;
-use std::fmt::Write;
+use std::{cmp::max, io::Write};
 use nalgebra::Vector2;
 
 fn get_points(line: &str) -> (Vector2<i32>, Vector2<i32>) {
@@ -12,16 +11,16 @@ fn get_points(line: &str) -> (Vector2<i32>, Vector2<i32>) {
 }
 
 fn points_in_line(origin: Vector2<i32>, vector: Vector2<i32>) -> impl Iterator<Item = Vector2<i32>> {
-    let sign_vector = Vector2::new(
+    let sign_vector: Vector2<i32> = [
         vector[0].signum(),
         vector[1].signum()
-    );
+    ].into();
 
     let steps = max(vector[0].abs(), vector[1].abs());
     (0..steps + 1).map(move |step| origin + sign_vector * step)
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let mut map: Box<[u8; 1000*1000]> = Box::new([0; 1000*1000]);
 
@@ -47,7 +46,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", count).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let mut map: Box<[u8; 1000*1000]> = Box::new([0; 1000*1000]);
 

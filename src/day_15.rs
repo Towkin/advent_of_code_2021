@@ -1,4 +1,5 @@
-use std::fmt::Write;
+use std::io::Write;
+
 use pathfinding::prelude;
 
 struct NeighborIterator {
@@ -67,7 +68,7 @@ fn solve(size: u32, board: &[u8]) -> u32 {
     path.1
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut board: [u8; 100 * 100] = [0; 100 * 100];
     for (y, line) in input.lines().enumerate() {
         for x in 0..100 {
@@ -77,7 +78,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", solve(100, &board)).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut board: Box<[u8; 500 * 500]> = Box::new([0; 500 * 500]);
     for y_tile in 0..5 {
         for (y, line) in input.lines().enumerate() {

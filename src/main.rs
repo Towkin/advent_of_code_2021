@@ -1,5 +1,6 @@
-use std::fmt::Write;
-use std::io::Read;
+use std::fmt::Write as FmtWrite;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::time::Instant;
 use std::env;
 
@@ -31,30 +32,32 @@ fn main() {
     let mut path = env::current_dir().unwrap();
     path.push("input");
 
-    let mut output = std::io::stdout();
-    let mut output_text = String::from("Solving\n");
+    let output = std::io::stdout();
+    let mut writer = std::io::BufWriter::with_capacity(
+        64 * 1024, 
+        output.lock());
     let mut input_file = String::new();
     let mut input = String::new();
     let time = Instant::now();
     for _ in 0..iterations {
-        output_text.truncate("Solving\n".len());
+        write!(&mut writer, "Solving\n").unwrap();
 
         for day in days.iter() {
             input.clear();
-            write!(input_file, "{}.txt", day).unwrap();
+            write!(&mut input_file, "{}.txt", day).unwrap();
             path.push(input_file.as_str());
-            std::fs::File::open(&path).unwrap().read_to_string(&mut input).unwrap();
+            File::open(&path).unwrap().read_to_string(&mut input).unwrap();
             path.pop();
             input_file.clear();
 
             input.truncate(input.trim_end().len());
-            solve(*day, &input, &mut output_text);
+            solve(*day, &input, &mut writer);
         }
-        output_text.push_str("Done\n");
-        std::io::Write::write(&mut output, output_text.as_bytes()).unwrap();
+        write!(&mut writer, "Done\n").unwrap();
     }
     let duration = time.elapsed();
-    println!("Completed all iterations in {:?}, average of {:?} per iteration.", duration, duration / iterations);
+    write!(&mut writer, "Completed all iterations in {:?}, average of {:?} per iteration.", duration, duration / iterations).unwrap();
+    std::io::Write::flush(&mut writer).unwrap();
 }
 
 macro_rules! solve_and_print_day {
@@ -69,7 +72,7 @@ macro_rules! solve_and_print_day {
     };
 }
 
-fn solve(day: u32, input: &String, output: &mut String) {
+fn solve(day: u32, input: &String, output: &mut impl Write) {
     match day {
         1 => solve_and_print_day!(day_1, 1, input, output),
         2 => solve_and_print_day!(day_2, 2, input, output),
@@ -96,14 +99,29 @@ fn solve(day: u32, input: &String, output: &mut String) {
     };
 }
 
+const MIN_DAY: u32 = 1;
+const MAX_DAY: u32 = 21;
+
 fn read_args() -> (u32, Vec<u32>) {
     let mut args = env::args();
 
     // Skip first argument
     args.next();
 
-    (
-        args.next().unwrap().parse().expect("Bad iteration count"),
-        args.map(|a| a.parse().expect("Bad day")).collect(),
-    )
+    let iterations = if let Some(iterations) = args.next() { iterations.parse().expect("Bad iteration count") } else { 1 };
+    let mut days: Vec<u32> = args.map(|a| {
+        let day = a.parse().map_err(|_| "Could not parse day")?;
+        if day < MIN_DAY || day > MAX_DAY {
+            Err("Day not in bounds")
+        } else {
+            Ok(day)
+        }
+    }).map(|day| day.expect("Bad day")).collect();
+    if days.len() == 0 {
+        for i in MIN_DAY..MAX_DAY + 1 {
+            days.push(i);
+        }
+    }
+
+    ( iterations, days )
 }

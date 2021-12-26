@@ -1,6 +1,6 @@
-use std::{fmt::Write, cmp::min};
+use std::{cmp::min, io::Write};
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let numbers: Vec<u32> = input.split(',').map(|number| number.parse().unwrap()).collect();
 
     let range = *numbers.iter().min().unwrap()..*numbers.iter().max().unwrap();
@@ -12,7 +12,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", best).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let numbers: Vec<u32> = input.split(',').map(|number| number.parse().unwrap()).collect();
 
     let range = *numbers.iter().min().unwrap()..*numbers.iter().max().unwrap()+1;

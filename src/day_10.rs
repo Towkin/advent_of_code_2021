@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::io::Write;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut brace_stack: Vec<char> = Vec::new();
     let sum: u32 = input.lines().filter_map(|line| {
         for brace in line.chars() {
@@ -31,7 +31,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", sum).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut brace_stack: Vec<char> = Vec::new();
     let mut points: Vec<u64> = input.lines().filter_map(|line| {
         for brace in line.chars() {

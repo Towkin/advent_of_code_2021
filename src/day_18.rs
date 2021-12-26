@@ -1,4 +1,4 @@
-use std::{fmt::{Write, Display}, ops::Add};
+use std::{fmt::{Write as FmtWrite, Display}, ops::Add, io::Write};
 
 #[derive(Clone)]
 struct Hierarchy {
@@ -263,7 +263,7 @@ impl Display for Hierarchy {
     }
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut hierarchy = Hierarchy::parse(input.lines().next().unwrap());
     for line in input.lines().skip(1) {
         hierarchy = hierarchy + Hierarchy::parse(line);
@@ -273,7 +273,7 @@ pub fn solve_a(input: &String, output: &mut String) {
 }
 
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let input: Vec<Hierarchy> = input.lines().map(Hierarchy::parse).collect();
 
     let mut max: u32 = 0;

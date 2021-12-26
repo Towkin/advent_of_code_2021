@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::io::Write;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
 
@@ -23,7 +23,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", horizontal_position * vertical_position).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut horizontal_position: u32 = 0;
     let mut vertical_position: u32 = 0;
     let mut aim_position: u32 = 0;

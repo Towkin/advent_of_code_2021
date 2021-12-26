@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::io::Write;
 
 fn get_bit(bytes: &[u8], index: usize) -> u8 {
     let byte_pos = index / 8;
@@ -85,7 +85,7 @@ fn sum_packet_versions(bytes: &[u8], bit_offset: &mut usize) -> u32 {
     version_sum
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let input = hex::decode(input).unwrap();
 
     let sum = sum_packet_versions(&input, &mut 0);
@@ -170,7 +170,7 @@ fn operate_packets(bytes: &[u8], bit_offset: &mut usize) -> u64 {
     }
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let input = hex::decode(input).unwrap();
 
     let result = operate_packets(&input, &mut 0);

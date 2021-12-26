@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::io::Write;
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let fish_days = input
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());
@@ -29,7 +29,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", population.iter().sum::<u32>()).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let fish_days = input
         .split(',')
         .map(|number| number.parse::<usize>().unwrap());

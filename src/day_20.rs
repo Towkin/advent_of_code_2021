@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::io::Write;
 
 fn get_value_map(input_map: &str) -> [bool; 512]
 {
@@ -63,7 +63,7 @@ fn get_image<const N: usize>(lines: &str, size: usize, inset: usize) -> [bool; N
     image
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let (input_map, input_image) = input.split_once("\n\n").unwrap();
     let value_map = get_value_map(input_map);
 
@@ -86,7 +86,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", image.iter().filter(|v| **v).count()).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let (input_map, input_image) = input.split_once("\n\n").unwrap();
     let value_map = get_value_map(input_map);
 

@@ -1,5 +1,5 @@
 
-use std::{collections::HashSet, fmt::{Display, Write}};
+use std::{collections::HashSet, fmt::Display, io::Write};
 
 const SIZE: usize = 5;
 
@@ -80,7 +80,7 @@ fn get_boards(lines: &Vec<&str>) -> Vec<BingoBoard> {
     boards
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let lines: Vec<&str> = lines.collect();
     let series = lines[0]
@@ -109,7 +109,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", unmarked_number_product).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let lines = input.lines();
     let lines: Vec<&str> = lines.collect();
 

@@ -1,6 +1,4 @@
-use std::cmp::{max, min};
-use std::fmt::Write;
-
+use std::{cmp::{max, min}, io::Write};
 fn flash(energy_levels: &mut [u8; 10*10], x: usize, y: usize) -> u32 {
     let mut flashes = 1;
     energy_levels[y * 10 + x] = 0;
@@ -18,7 +16,7 @@ fn flash(energy_levels: &mut [u8; 10*10], x: usize, y: usize) -> u32 {
     flashes
 }
 
-pub fn solve_a(input: &String, output: &mut String) {
+pub fn solve_a(input: &String, output: &mut impl Write) {
     let mut energy_levels = [0; 10 * 10];
     input.lines().enumerate().for_each(|(y, line)| {
         for (x, level) in line.as_bytes().iter().enumerate() {
@@ -46,7 +44,7 @@ pub fn solve_a(input: &String, output: &mut String) {
     write!(output, "{}", flashes).unwrap();
 }
 
-pub fn solve_b(input: &String, output: &mut String) {
+pub fn solve_b(input: &String, output: &mut impl Write) {
     let mut energy_levels = [0; 10 * 10];
     input.lines().enumerate().for_each(|(y, line)| {
         for (x, level) in line.as_bytes().iter().enumerate() {
