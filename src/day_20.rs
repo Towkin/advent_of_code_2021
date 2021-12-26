@@ -34,7 +34,7 @@ fn enhance(value_map: &[bool; 512], size: usize, inset: usize, image: &[bool], o
     }
 }
 
-fn print_image(size: usize, image: &[bool]) {
+fn _print_image(size: usize, image: &[bool]) {
     for y in 0..size {
         for x in 0..size {
             if image[y * size + x] {
