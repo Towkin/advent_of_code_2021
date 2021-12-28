@@ -25,6 +25,7 @@ mod day_18;
 mod day_19;
 mod day_20;
 mod day_21;
+mod day_22;
 
 fn main() {
     let (iterations, days) = read_args();
@@ -95,12 +96,13 @@ fn solve(day: u32, input: &String, output: &mut impl Write) {
         19 => solve_and_print_day!(day_19, 19, input, output),
         20 => solve_and_print_day!(day_20, 20, input, output),
         21 => solve_and_print_day!(day_21, 21, input, output),
+        22 => solve_and_print_day!(day_22, 22, input, output),
         _ => panic!("Could not solve day {}", day),
     };
 }
 
 const MIN_DAY: u32 = 1;
-const MAX_DAY: u32 = 21;
+const MAX_DAY: u32 = 22;
 
 fn read_args() -> (u32, Vec<u32>) {
     let mut args = env::args();
