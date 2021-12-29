@@ -44,9 +44,9 @@ impl Scanner {
             };
             for other_position in beacon_positions.iter() {
                 let relative_position = other_position - beacon_position;
-                let position_hash = 
-                    relative_position[0].abs() + 
-                    relative_position[1].abs() + 
+                let position_hash =
+                    relative_position[0].abs() +
+                    relative_position[1].abs() +
                     relative_position[2].abs();
 
                 beacon.relative_positions.insert(position_hash,  relative_position);
@@ -160,7 +160,7 @@ fn get_scanner_transforms(scanners: &Vec<Scanner>) -> Vec<Transform> {
 }
 
 pub fn solve_a(input: &String, output: &mut impl Write) {
-    let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
+    let scanners: Vec<Scanner> = input.split("--- scanner").skip(1).map(|scanner| Scanner::parse(scanner.trim())).collect();
     let scanner_transforms = get_scanner_transforms(&scanners);
 
     let mut beacon_positions: HashSet<Position> = HashSet::new();
@@ -174,7 +174,7 @@ pub fn solve_a(input: &String, output: &mut impl Write) {
 }
 
 pub fn solve_b(input: &String, output: &mut impl Write) {
-    let scanners: Vec<Scanner> = input.split("\n\n").map(Scanner::parse).collect();
+    let scanners: Vec<Scanner> = input.split("--- scanner").skip(1).map(|scanner| Scanner::parse(scanner.trim())).collect();
     let scanner_transforms = get_scanner_transforms(&scanners);
 
     let scanner_positions: Vec<Position> = scanner_transforms.iter().map(|t| t.translation).collect();

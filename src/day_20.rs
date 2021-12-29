@@ -64,7 +64,8 @@ fn get_image<const N: usize>(lines: &str, size: usize, inset: usize) -> [bool; N
 }
 
 pub fn solve_a(input: &String, output: &mut impl Write) {
-    let (input_map, input_image) = input.split_once("\n\n").unwrap();
+    let (input_map, input_image) = input.split_once("\n").unwrap();
+    let input_image = input_image.trim_start();
     let value_map = get_value_map(input_map);
 
     const ITERATIONS: usize = 2;
@@ -87,7 +88,8 @@ pub fn solve_a(input: &String, output: &mut impl Write) {
 }
 
 pub fn solve_b(input: &String, output: &mut impl Write) {
-    let (input_map, input_image) = input.split_once("\n\n").unwrap();
+    let (input_map, input_image) = input.split_once("\n").unwrap();
+    let input_image = input_image.trim_start();
     let value_map = get_value_map(input_map);
 
     const ITERATIONS: usize = 50;
